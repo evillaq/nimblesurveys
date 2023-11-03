@@ -19,4 +19,16 @@ interface NimbleSurveyApi {
         @Body request: RegistrationRequest,
     ): Response<String>
 
+    object GrantType {
+        const val PASSWORD = "password"
+        const val REFRESH_TOKEN = "refresh_token"
+    }
+
+    object Argument {
+        const val GRANT_TYPE = "grant_type"
+        const val EMAIL = "email"
+        const val PASSWORD = "password"
+        const val CLIENT_ID = "client_id"
+        const val CLIENT_SECRET = "client_secret"
+    }
 }
