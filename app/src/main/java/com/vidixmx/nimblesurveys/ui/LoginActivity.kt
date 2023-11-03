@@ -16,5 +16,22 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        setupActivity()
+    }
+
+    private fun setupActivity() {
+
+        with(binding) {
+            btnLogin.setOnClickListener {
+
+            }
+        }
+
+    }
+
+
 }
 
