@@ -4,9 +4,16 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface NimbleSurveyApi {
+
+    @GET("me")
+    suspend fun getUserProfile(
+        @Header("Authorization") token: String,
+    ): Response<ApiResponse>
 
     @FormUrlEncoded
     @POST("oauth/token")

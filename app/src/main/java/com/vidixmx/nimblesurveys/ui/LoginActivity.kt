@@ -1,13 +1,14 @@
 package com.vidixmx.nimblesurveys.ui
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.vidixmx.nimblesurveys.data.UserRepository
 import com.vidixmx.nimblesurveys.data.model.User
 import com.vidixmx.nimblesurveys.data.remote.RetrofitService
 import com.vidixmx.nimblesurveys.databinding.ActivityLoginBinding
-import retrofit2.Retrofit
+import com.vidixmx.nimblesurveys.ui.common.toast
 
 class LoginActivity : AppCompatActivity() {
 
@@ -20,7 +21,7 @@ class LoginActivity : AppCompatActivity() {
 
         // Instantiate viewModel
         val repository = UserRepository(RetrofitService.nimbleSurveyApi)
-        val factory = LoginViewModelFactory(repository)
+        val factory = LoginViewModelFactory(application, repository)
         viewModel = ViewModelProvider(this, factory)[LoginViewModel::class.java]
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -32,22 +33,45 @@ class LoginActivity : AppCompatActivity() {
         super.onStart()
 
         setupActivity()
+    }
 
-        // temp
+    private fun setControlsForTest() {
         val testUser = User("evillaq@hotmail.com", "EVQ", "12345678")
-        viewModel.loginUser(testUser.email, testUser.password)
+        with(binding) {
+            etEmail.setText(testUser.email)
+            etPassword.setText(testUser.password)
+        }
     }
 
     private fun setupActivity() {
 
+        // set controls for test: TEMP!!
+        setControlsForTest()
+
         with(binding) {
             btnLogin.setOnClickListener {
+                val email = etEmail.text.toString().trim()
+                val password = etPassword.text.toString().trim()
+                viewModel.loginUser(email, password)
+            }
+        }
 
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+
+        viewModel.message.observe(this) { message ->
+            toast(message)
+        }
+
+        viewModel.user.observe(this) { user ->
+            user?.let {
+                toast("Welcome ${user.name}", Toast.LENGTH_LONG)
             }
         }
 
     }
-
 
 }
 

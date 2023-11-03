@@ -34,4 +34,9 @@ class UserRepository(
 
     }
 
+    suspend fun getUserProfile(token: String): Response<ApiResponse> {
+        val authorizationHeaderValue = "Bearer $token"
+        return api.getUserProfile(authorizationHeaderValue)
+    }
+
 }
