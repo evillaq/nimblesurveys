@@ -55,8 +55,13 @@ dependencies {
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
 
+    // Viewpager2
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+
     // Serialization
     implementation("com.google.code.gson:gson:2.9.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.4")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

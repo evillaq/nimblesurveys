@@ -43,7 +43,7 @@ class LoginViewModel(
                     withContext(Dispatchers.Main) {
                         if (result.isSuccessful) {
                             result.body()?.let { loginResponse ->
-                                processResponseData(loginResponse.data)
+                                processLoginResponseData(loginResponse.data)
                             }
                         } else {
                             val responseError: NimbleError? =
@@ -122,7 +122,7 @@ class LoginViewModel(
         }
     }
 
-    private fun processResponseData(data: ApiResponse.Data) {
+    private fun processLoginResponseData(data: ApiResponse.Data) {
 
         // update preferences
         accessToken = data.attributes[Preferences.ACCESS_TOKEN] ?: ""
@@ -133,7 +133,6 @@ class LoginViewModel(
         fetchUserProfile()
 
     }
-
 
     private fun loadUserProfile(data: ApiResponse.Data) {
         val email = data.attributes["email"] ?: ""
