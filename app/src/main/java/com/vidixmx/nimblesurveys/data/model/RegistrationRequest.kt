@@ -1,7 +1,6 @@
-package com.vidixmx.nimblesurveys.data.remote
+package com.vidixmx.nimblesurveys.data.model
 
 import com.google.gson.annotations.SerializedName
-import com.vidixmx.nimblesurveys.data.model.User
 
 data class RegistrationRequest(
     val user: User,
