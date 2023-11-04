@@ -7,11 +7,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.vidixmx.nimblesurveys.Constants
 import com.vidixmx.nimblesurveys.Constants.Preferences
-import com.vidixmx.nimblesurveys.data.UserRepository
+import com.vidixmx.nimblesurveys.data.SurveyRepository
+import com.vidixmx.nimblesurveys.data.model.Survey
 import com.vidixmx.nimblesurveys.data.model.User
+import com.vidixmx.nimblesurveys.data.remote.NimbleError
 import com.vidixmx.nimblesurveys.utils.sharedPreferences
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -19,7 +21,7 @@ import java.util.Locale
 
 class SurveysViewModel(
     application: Application,
-    private val repository: UserRepository,
+    private val repository: SurveyRepository,
 ) : AndroidViewModel(application) {
 
     // preferences delegation
@@ -44,12 +46,42 @@ class SurveysViewModel(
         _user.value = user
     }
 
-    fun fetchSurveys() {
-        viewModelScope.launch {
-            try {
+    private val _surveys = MutableLiveData<List<Survey>>()
+    val surveys: LiveData<List<Survey>> = _surveys
 
+    private fun setSurveys(surveys: List<Survey>) {
+        viewModelScope.launch {
+            _surveys.postValue(surveys)
+        }
+    }
+
+    fun fetchSurveys() {
+        setIsLoading(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = repository.getSurveys(accessToken)
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        val surveys = it.surveys
+                        if (surveys.isNotEmpty()) {
+                            setSurveys(surveys)
+                        } else {
+                            setMessage("No surveys found")
+                        }
+                    }
+                } else {
+                    val responseError: NimbleError? =
+                        NimbleError.fromString(response.errorBody()!!.string())
+                    responseError?.let { error ->
+                        if (error.errors.isNotEmpty()) {
+                            _message.postValue(error.errors[0].detail)
+                        }
+                    }
+                }
             } catch (e: Exception) {
                 setMessage(e.localizedMessage ?: "Error fetching surveys")
+            } finally {
+                setIsLoading(false)
             }
         }
     }
@@ -69,7 +101,7 @@ class SurveysViewModel(
 
 class SurveysViewModelFactory(
     private val application: Application,
-    private val repository: UserRepository,
+    private val repository: SurveyRepository,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SurveysViewModel::class.java)) {
