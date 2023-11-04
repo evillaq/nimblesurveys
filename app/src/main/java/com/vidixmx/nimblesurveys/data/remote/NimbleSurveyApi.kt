@@ -1,5 +1,6 @@
 package com.vidixmx.nimblesurveys.data.remote
 
+import com.vidixmx.nimblesurveys.data.model.RegistrationRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.FieldMap
@@ -13,13 +14,13 @@ interface NimbleSurveyApi {
     @GET("me")
     suspend fun getUserProfile(
         @Header("Authorization") token: String,
-    ): Response<ApiResponse>
+    ): Response<UserProfileResponse>
 
     @FormUrlEncoded
     @POST("oauth/token")
     suspend fun login(
         @FieldMap params: Map<String, String>,
-    ): Response<ApiResponse>
+    ): Response<TokenResponse>
 
     @POST("registrations")
     suspend fun registerAccount(
