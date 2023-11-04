@@ -2,11 +2,12 @@ package com.vidixmx.nimblesurveys.data
 
 import com.vidixmx.nimblesurveys.Constants
 import com.vidixmx.nimblesurveys.data.model.User
-import com.vidixmx.nimblesurveys.data.remote.ApiResponse
+import com.vidixmx.nimblesurveys.data.remote.TokenResponse
 import com.vidixmx.nimblesurveys.data.remote.NimbleSurveyApi
 import com.vidixmx.nimblesurveys.data.remote.NimbleSurveyApi.Argument
 import com.vidixmx.nimblesurveys.data.remote.NimbleSurveyApi.GrantType
-import com.vidixmx.nimblesurveys.data.remote.RegistrationRequest
+import com.vidixmx.nimblesurveys.data.model.RegistrationRequest
+import com.vidixmx.nimblesurveys.data.remote.UserProfileResponse
 import retrofit2.Response
 
 class UserRepository(
@@ -21,7 +22,7 @@ class UserRepository(
         )
     )
 
-    suspend fun loginUser(email: String, password: String): Response<ApiResponse> {
+    suspend fun loginUser(email: String, password: String): Response<TokenResponse> {
 
         val loginArgsMap = mutableMapOf(
             Argument.GRANT_TYPE to GrantType.PASSWORD,
@@ -34,7 +35,7 @@ class UserRepository(
 
     }
 
-    suspend fun getUserProfile(token: String): Response<ApiResponse> {
+    suspend fun getUserProfile(token: String): Response<UserProfileResponse> {
         val authorizationHeaderValue = "Bearer $token"
         return api.getUserProfile(authorizationHeaderValue)
     }
