@@ -13,11 +13,11 @@ import com.vidixmx.nimblesurveys.data.UserRepository
 import com.vidixmx.nimblesurveys.data.model.User
 import com.vidixmx.nimblesurveys.data.remote.ApiResponse
 import com.vidixmx.nimblesurveys.data.remote.NimbleError
+import com.vidixmx.nimblesurveys.utils.isTokenValid
 import com.vidixmx.nimblesurveys.utils.sharedPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Date
 
 class LoginViewModel(
     application: Application,
@@ -112,20 +112,11 @@ class LoginViewModel(
      * considering a little margin of n seconds
      */
     fun validateToken() {
-
         if (tokenCreation != "" && tokenExpiresInSeconds != "") {
-            val tokenLife = tokenExpiresInSeconds.toLong()
-            val creationTime = tokenCreation.toLong()
-            val currentTime = Date().time / 1_000
-
-            val remainingSeconds = (creationTime + tokenLife) - currentTime
-            println("Remaining seconds: $remainingSeconds")
-            if (remainingSeconds > TOKEN_SECONDS_OFFSET) {
-                // token is still valid, so fetch user profile
+            if (isTokenValid(tokenCreation.toLong(), tokenExpiresInSeconds.toLong())) {
                 fetchUserProfile()
             }
         }
-
     }
 
     // auxiliary functions
@@ -171,7 +162,6 @@ class LoginViewModel(
     }
 
     companion object {
-        private const val TOKEN_SECONDS_OFFSET = 15L
         private const val TAG = "LoginViewModel"
     }
 

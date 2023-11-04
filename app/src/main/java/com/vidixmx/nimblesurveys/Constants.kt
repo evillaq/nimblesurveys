@@ -5,6 +5,8 @@ object Constants {
     const val API_KEY = "ofzl-2h5ympKa0WqqTzqlVJUiRsxmXQmt5tkgrlWnOE"
     const val API_SECRET = "lMQb900L-mTeU-FVTCwyhjsfBwRCxwwbCitPob96cuU"
 
+    const val TOKEN_SECONDS_OFFSET = 15L
+
     object Preferences {
         const val ACCESS_TOKEN = "access_token"
         const val REFRESH_TOKEN = "refresh_token"

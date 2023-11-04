@@ -33,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
         super.onStart()
 
         setupActivity()
+        observeViewModel()
 
         // check if user is already logged in
         viewModel.validateToken()
@@ -59,7 +60,6 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        observeViewModel()
     }
 
     private fun observeViewModel() {
@@ -70,7 +70,7 @@ class LoginActivity : AppCompatActivity() {
 
         viewModel.user.observe(this) { user ->
             user?.let {
-                toast("Welcome ${user.name}", Toast.LENGTH_LONG)
+                HomeScreenActivity.show(this@LoginActivity, user)
             }
         }
 
