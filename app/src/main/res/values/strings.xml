@@ -1,14 +1,16 @@
 <resources>
     <string name="app_name">NimbleSurveys</string>
 
-    <!-- login screen -->
+    <!-- Login Screen -->
     <string name="login_screen_hints_email">Email</string>
     <string name="login_screen_hints_password">Password</string>
     <string name="login_screen_login_button_text">Log In</string>
     <string name="login_screen_forgot_password_label">Forgot?</string>
     <string name="title_activity_home_screen">HomeScreenActivity</string>
 
+    <!-- Home Screen -->
     <string name="home_screen_tak_survey_button_text">Take survey</string>
     <string name="home_screen_tak_survey_avatar_image_description">Avatar image</string>
+    <string name="home_screen_tak_survey_background_description">Survey background</string>
 
 </resources>

@@ -15,17 +15,18 @@
         app:layout_constraintBottom_toTopOf="@id/cardEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardEmail"
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="60dp"
-        android:layout_marginHorizontal="32dp"
         android:layout_marginBottom="16dp"
         app:cardBackgroundColor="#80000000"
         app:cardCornerRadius="12dp"
         app:layout_constraintBottom_toTopOf="@id/cardPassword"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <EditText
@@ -35,23 +36,23 @@
             android:layout_marginHorizontal="16dp"
             android:background="@android:color/transparent"
             android:hint="@string/login_screen_hints_email"
+            android:inputType="textEmailAddress"
             android:textColor="@color/white"
-            android:textColorHint="@color/gray" />
-
+            android:textColorHint="@color/gray"
+            android:autofillHints="emailAddress" />
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardPassword"
         app:cardBackgroundColor="#80000000"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginHorizontal="32dp"
         android:background="#80ffffff"
         app:cardCornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/cardEmail"
+        app:layout_constraintStart_toStartOf="@id/cardEmail"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -69,7 +70,8 @@
                 android:hint="@string/login_screen_hints_password"
                 android:inputType="textPassword"
                 android:textColor="@color/white"
-                android:textColorHint="@color/gray" />
+                android:textColorHint="@color/gray"
+                android:importantForAutofill="no" />
 
             <TextView
                 android:id="@+id/txtForgotPassword"
@@ -89,16 +91,15 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogin"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="64dp"
-        android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/white"
         app:cornerRadius="12dp"
         android:text="@string/login_screen_login_button_text"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/cardEmail"
+        app:layout_constraintStart_toStartOf="@id/cardEmail"
         app:layout_constraintTop_toBottomOf="@id/cardPassword" />
 
 

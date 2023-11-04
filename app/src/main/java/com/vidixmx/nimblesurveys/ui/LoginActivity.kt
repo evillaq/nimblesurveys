@@ -33,6 +33,9 @@ class LoginActivity : AppCompatActivity() {
         super.onStart()
 
         setupActivity()
+
+        // check if user is already logged in
+        viewModel.validateToken()
     }
 
     private fun setControlsForTest() {

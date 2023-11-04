@@ -17,6 +17,7 @@ import com.vidixmx.nimblesurveys.utils.sharedPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Date
 
 class LoginViewModel(
     application: Application,
@@ -27,6 +28,7 @@ class LoginViewModel(
     private var accessToken by sharedPreferences(Preferences.ACCESS_TOKEN, "")
     private var refreshToken by sharedPreferences(Preferences.REFRESH_TOKEN, "")
     private var tokenCreation by sharedPreferences(Preferences.TOKEN_CREATION_TIMESTAMP, "")
+    private var tokenExpiresInSeconds by sharedPreferences(Preferences.TOKEN_EXPIRES_IN_SECONDS, "")
 
     private val _message = MutableLiveData<String>()
     val message: LiveData<String> = _message
@@ -105,6 +107,27 @@ class LoginViewModel(
 
     }
 
+    /**
+     * If exist a stored token in preferences, check if it is still valid
+     * considering a little margin of n seconds
+     */
+    fun validateToken() {
+
+        if (tokenCreation != "" && tokenExpiresInSeconds != "") {
+            val tokenLife = tokenExpiresInSeconds.toLong()
+            val creationTime = tokenCreation.toLong()
+            val currentTime = Date().time / 1_000
+
+            val remainingSeconds = (creationTime + tokenLife) - currentTime
+            println("Remaining seconds: $remainingSeconds")
+            if (remainingSeconds > TOKEN_SECONDS_OFFSET) {
+                // token is still valid, so fetch user profile
+                fetchUserProfile()
+            }
+        }
+
+    }
+
     // auxiliary functions
 
     private fun validCredentials(email: String, password: String): Boolean {
@@ -128,10 +151,10 @@ class LoginViewModel(
         accessToken = data.attributes[Preferences.ACCESS_TOKEN] ?: ""
         refreshToken = data.attributes[Preferences.REFRESH_TOKEN] ?: ""
         tokenCreation = data.attributes[Preferences.TOKEN_CREATION_TIMESTAMP] ?: ""
+        tokenExpiresInSeconds = data.attributes[Preferences.TOKEN_EXPIRES_IN_SECONDS] ?: ""
 
         // retrieve user data
         fetchUserProfile()
-
     }
 
     private fun loadUserProfile(data: ApiResponse.Data) {
@@ -148,6 +171,7 @@ class LoginViewModel(
     }
 
     companion object {
+        private const val TOKEN_SECONDS_OFFSET = 15L
         private const val TAG = "LoginViewModel"
     }
 
