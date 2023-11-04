@@ -10,8 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.vidixmx.nimblesurveys.Constants.Preferences
 import com.vidixmx.nimblesurveys.data.UserRepository
+import com.vidixmx.nimblesurveys.data.model.Token
 import com.vidixmx.nimblesurveys.data.model.User
-import com.vidixmx.nimblesurveys.data.remote.ApiResponse
 import com.vidixmx.nimblesurveys.data.remote.NimbleError
 import com.vidixmx.nimblesurveys.utils.isTokenValid
 import com.vidixmx.nimblesurveys.utils.sharedPreferences
@@ -44,8 +44,8 @@ class LoginViewModel(
                     val result = repository.loginUser(email, password)
                     withContext(Dispatchers.Main) {
                         if (result.isSuccessful) {
-                            result.body()?.let { loginResponse ->
-                                processLoginResponseData(loginResponse.data)
+                            result.body()?.let { tokenResponse ->
+                                processToken(tokenResponse.data.token)
                             }
                         } else {
                             val responseError: NimbleError? =
@@ -80,7 +80,7 @@ class LoginViewModel(
                 withContext(Dispatchers.Main) {
                     if (result.isSuccessful) {
                         result.body()?.let { userProfileResponse ->
-                            loadUserProfile(userProfileResponse.data)
+                            loadUserProfile(userProfileResponse.data.userProfile)
                         }
                     } else {
                         val responseError: NimbleError? =
@@ -136,22 +136,22 @@ class LoginViewModel(
         }
     }
 
-    private fun processLoginResponseData(data: ApiResponse.Data) {
+    private fun processToken(token: Token) {
 
         // update preferences
-        accessToken = data.attributes[Preferences.ACCESS_TOKEN] ?: ""
-        refreshToken = data.attributes[Preferences.REFRESH_TOKEN] ?: ""
-        tokenCreation = data.attributes[Preferences.TOKEN_CREATION_TIMESTAMP] ?: ""
-        tokenExpiresInSeconds = data.attributes[Preferences.TOKEN_EXPIRES_IN_SECONDS] ?: ""
+        accessToken = token.accessToken
+        refreshToken = token.refreshToken
+        tokenCreation = token.createdAt.toString()
+        tokenExpiresInSeconds = token.expiresIn.toString()
 
         // retrieve user data
         fetchUserProfile()
     }
 
-    private fun loadUserProfile(data: ApiResponse.Data) {
-        val email = data.attributes["email"] ?: ""
-        val name = data.attributes["name"] ?: ""
-        val avatarUrl = data.attributes["avatar_url"] ?: ""
+    private fun loadUserProfile(userProfile: User) {
+        val email = userProfile.email
+        val name = userProfile.name
+        val avatarUrl = userProfile.avatarUrl
 
         if (email.isEmpty() or name.isEmpty()) {
             throw IllegalStateException("Invalid user profile")
