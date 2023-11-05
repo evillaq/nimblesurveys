@@ -12,6 +12,8 @@ object Constants {
         const val REFRESH_TOKEN = "refresh_token"
         const val TOKEN_CREATION_TIMESTAMP = "created_at"
         const val TOKEN_EXPIRES_IN_SECONDS: String = "expires_in"
+        const val LAST_EMAIL: String = "last_email"
+        const val LAST_PASSWORD: String = "last_password"
     }
 
 }

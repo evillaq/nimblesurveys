@@ -4,9 +4,8 @@ package com.vidixmx.nimblesurveys.data.remote
 import com.google.gson.annotations.SerializedName
 import com.vidixmx.nimblesurveys.data.model.Survey
 
-data class SurveysResponse(
-    val data: ArrayList<Data>,
-    val meta: Map<String, Int>,
+data class SurveyDetailsResponse(
+    val data: Data,
 ) {
     data class Data(
         @SerializedName("attributes")
@@ -14,8 +13,4 @@ data class SurveysResponse(
         val id: String,
         val type: String,
     )
-
-    fun toSurveyList(): List<Survey> {
-        return this.data.map { it.survey }
-    }
 }

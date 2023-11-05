@@ -1,19 +1,18 @@
-package com.vidixmx.nimblesurveys.ui
+package com.vidixmx.nimblesurveys.ui.login
 
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.vidixmx.nimblesurveys.data.UserRepository
-import com.vidixmx.nimblesurveys.data.model.User
 import com.vidixmx.nimblesurveys.data.remote.RetrofitService
 import com.vidixmx.nimblesurveys.databinding.ActivityLoginBinding
+import com.vidixmx.nimblesurveys.ui.surveys.HomeScreenActivity
 import com.vidixmx.nimblesurveys.ui.common.toast
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
-
     private lateinit var viewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +23,7 @@ class LoginActivity : AppCompatActivity() {
         val factory = LoginViewModelFactory(application, repository)
         viewModel = ViewModelProvider(this, factory)[LoginViewModel::class.java]
 
+        // Instantiate binding
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -39,18 +39,18 @@ class LoginActivity : AppCompatActivity() {
         viewModel.validateToken()
     }
 
-    private fun setControlsForTest() {
-        val testUser = User("evillaq@hotmail.com", "EVQ", "12345678")
+    private fun retrievedLastUsedCredentials() {
+        val (email, password) = viewModel.getLastUsedCredentials()
         with(binding) {
-            etEmail.setText(testUser.email)
-            etPassword.setText(testUser.password)
+            etEmail.setText(email)
+            etPassword.setText(password)
         }
     }
 
     private fun setupActivity() {
 
-        // set controls for test: TEMP!!
-        setControlsForTest()
+        // retrieve last used credentials from preferences
+        retrievedLastUsedCredentials()
 
         with(binding) {
             btnLogin.setOnClickListener {
@@ -64,14 +64,21 @@ class LoginActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
 
+        // Display messages
         viewModel.message.observe(this) { message ->
             toast(message)
         }
 
+        // launch home screen when user is logged in
         viewModel.user.observe(this) { user ->
             user?.let {
                 HomeScreenActivity.show(this@LoginActivity, user)
             }
+        }
+
+        // Progressbar visibility
+        viewModel.isLoading.observe(this) { isVisible ->
+            binding.progressBar.visibility = if (isVisible) View.VISIBLE else View.GONE
         }
 
     }

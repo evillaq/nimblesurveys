@@ -8,6 +8,8 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.QueryMap
 
 interface NimbleSurveyApi {
 
@@ -26,6 +28,23 @@ interface NimbleSurveyApi {
     suspend fun registerAccount(
         @Body request: RegistrationRequest,
     ): Response<String>
+
+    @POST("oauth/revoke")
+    suspend fun logout(
+        @FieldMap params: Map<String, String>,
+    ): Response<String>
+
+    @GET("surveys")
+    suspend fun getSurveys(
+        @Header("Authorization") token: String,
+        @QueryMap params: Map<String, Int>,
+    ): Response<SurveysResponse>
+
+    @GET("surveys/{id}")
+    suspend fun getSurveyDetails(
+        @Header("Authorization") token: String,
+        @Path("id") surveyId: String,
+    ): Response<SurveysResponse>
 
     object GrantType {
         const val PASSWORD = "password"
