@@ -7,5 +7,6 @@
     <string name="login_screen_login_button_text">Log In</string>
     <string name="login_screen_forgot_password_label">Forgot?</string>
     <string name="title_activity_home_screen">HomeScreenActivity</string>
+    <string name="home_screen_tak_survey_button_text">Take survey button</string>
 
 </resources>

@@ -5,19 +5,17 @@ import com.google.gson.annotations.SerializedName
 import com.vidixmx.nimblesurveys.data.model.Survey
 
 data class SurveysResponse(
-    @SerializedName("data")
-    val surveys: List<Survey>,
-    @SerializedName("meta")
-    val meta: Meta,
+    val data: ArrayList<Data>,
+    val meta: Map<String, Int>,
 ) {
-    data class Meta(
-        @SerializedName("page")
-        val page: Int,
-        @SerializedName("page_size")
-        val pageSize: Int,
-        @SerializedName("pages")
-        val pages: Int,
-        @SerializedName("records")
-        val records: Int,
+    data class Data(
+        @SerializedName("attributes")
+        val survey: Survey,
+        val id: String,
+        val type: String,
     )
+
+    fun toSurveyList(): List<Survey> {
+        return this.data.map { it.survey }
+    }
 }
