@@ -6,4 +6,9 @@
     </style>
 
     <style name="Theme.NimbleSurveys" parent="Base.Theme.NimbleSurveys" />
+
+    <style name="roundedFab">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item> <!-- Set the corner size to 50% for a circular shape -->
+    </style>
 </resources>
