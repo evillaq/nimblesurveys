@@ -1,5 +1,6 @@
-package com.vidixmx.nimblesurveys.ui
+package com.vidixmx.nimblesurveys.ui.surveys
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -7,10 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.vidixmx.nimblesurveys.data.SurveyRepository
-import com.vidixmx.nimblesurveys.data.model.Survey
 import com.vidixmx.nimblesurveys.data.model.User
 import com.vidixmx.nimblesurveys.data.remote.RetrofitService
 import com.vidixmx.nimblesurveys.databinding.ActivityHomeScreenBinding
@@ -20,6 +19,8 @@ class HomeScreenActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeScreenBinding
 
     private lateinit var viewModel: SurveysViewModel
+
+    private lateinit var pageAdapter: SurveysPageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,17 +47,23 @@ class HomeScreenActivity : AppCompatActivity() {
     }
 
     private fun setupActivity() {
+        setSurveyNavigation()
+        observeViewModel()
+
         viewModel.fetchSurveys()
     }
 
-    private fun setSurveyNavigation(surveys: List<Survey>) {
-        // binding.viewPager.adapter = ToDo
+    private fun setSurveyNavigation() {
+        pageAdapter = SurveysPageAdapter(supportFragmentManager, lifecycle)
+
+        binding.viewPager.adapter = pageAdapter
         TabLayoutMediator(
             binding.tabLayout,
             binding.viewPager
         ) { _, _ -> }.attach()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun observeViewModel() {
         viewModel.user.observe(this) { user ->
             user?.let {
@@ -64,16 +71,12 @@ class HomeScreenActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.selectedSurveyIndex.observe(this) { index ->
-            if (index != -1) {
-
+        viewModel.surveys.observe(this) { surveys ->
+            if (surveys.isNotEmpty()) {
+                pageAdapter.submitSurveys(surveys)
+                pageAdapter.notifyDataSetChanged()
             }
         }
-
-        viewModel.surveys.observe(this) { surveys ->
-            setSurveyNavigation(surveys)
-        }
-
     }
 
     private fun refreshScreenControls(user: User) {
@@ -99,7 +102,6 @@ class HomeScreenActivity : AppCompatActivity() {
         super.onStart()
 
         setupActivity()
-        observeViewModel()
     }
 
     companion object {
