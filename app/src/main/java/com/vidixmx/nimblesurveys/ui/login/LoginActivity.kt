@@ -1,4 +1,4 @@
-package com.vidixmx.nimblesurveys.ui
+package com.vidixmx.nimblesurveys.ui.login
 
 import android.os.Bundle
 import android.view.View
@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.vidixmx.nimblesurveys.data.UserRepository
 import com.vidixmx.nimblesurveys.data.remote.RetrofitService
 import com.vidixmx.nimblesurveys.databinding.ActivityLoginBinding
+import com.vidixmx.nimblesurveys.ui.surveys.HomeScreenActivity
 import com.vidixmx.nimblesurveys.ui.common.toast
 
 class LoginActivity : AppCompatActivity() {

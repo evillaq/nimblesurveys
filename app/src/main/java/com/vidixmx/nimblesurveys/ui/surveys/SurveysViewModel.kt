@@ -1,4 +1,4 @@
-package com.vidixmx.nimblesurveys.ui
+package com.vidixmx.nimblesurveys.ui.surveys
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -32,10 +32,11 @@ class SurveysViewModel(
 
     private val dateFormatter = SimpleDateFormat("EEEE, MMMM d", Locale.getDefault())
 
-    private val isLoading = MutableLiveData<Boolean>()
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
     private fun setIsLoading(newValue: Boolean) {
         viewModelScope.launch {
-            isLoading.postValue(newValue)
+            _isLoading.postValue(newValue)
         }
     }
 
@@ -61,8 +62,11 @@ class SurveysViewModel(
             try {
                 val response = repository.getSurveys(accessToken)
                 if (response.isSuccessful) {
+
+                    println("Surveys: ${response.body().toString()}")
+
                     response.body()?.let {
-                        val surveys = it.surveys
+                        val surveys = it.toSurveyList()
                         if (surveys.isNotEmpty()) {
                             setSurveys(surveys)
                         } else {

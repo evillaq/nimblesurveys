@@ -1,4 +1,4 @@
-package com.vidixmx.nimblesurveys.ui
+package com.vidixmx.nimblesurveys.ui.surveys
 
 import android.os.Build
 import android.os.Bundle

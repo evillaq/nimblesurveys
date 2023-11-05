@@ -1,4 +1,4 @@
-package com.vidixmx.nimblesurveys.ui
+package com.vidixmx.nimblesurveys.ui.login
 
 import android.app.Application
 import android.util.Patterns
