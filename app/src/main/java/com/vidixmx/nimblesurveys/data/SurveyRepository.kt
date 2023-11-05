@@ -13,11 +13,12 @@ class SurveyRepository(
         pageNumber: Int = 1,
         pageSize: Int = 3,
     ): Response<SurveysResponse> {
+        val authorizationHeaderValue = "Bearer $token"
         val params = mapOf(
-            "page" to pageNumber.toString(),
-            "size" to pageSize.toString()
+            "number" to pageNumber,
+            "size" to pageSize
         )
-        return api.getSurveys(token, params)
+        return api.getSurveys(authorizationHeaderValue, params)
     }
 
 }
