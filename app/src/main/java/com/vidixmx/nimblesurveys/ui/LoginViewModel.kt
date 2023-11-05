@@ -19,6 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+typealias SurveyCredentials = Pair<String, String>
+
 class LoginViewModel(
     application: Application,
     private val repository: UserRepository,
@@ -29,9 +31,19 @@ class LoginViewModel(
     private var refreshToken by sharedPreferences(Preferences.REFRESH_TOKEN, "")
     private var tokenCreation by sharedPreferences(Preferences.TOKEN_CREATION_TIMESTAMP, "")
     private var tokenExpiresInSeconds by sharedPreferences(Preferences.TOKEN_EXPIRES_IN_SECONDS, "")
+    private var lastEmail by sharedPreferences(Preferences.LAST_EMAIL, "")
+    private var lastPassword by sharedPreferences(Preferences.LAST_PASSWORD, "")
 
     private val _message = MutableLiveData<String>()
     val message: LiveData<String> = _message
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+    private fun setIsLoading(newValue: Boolean) {
+        viewModelScope.launch {
+            _isLoading.postValue(newValue)
+        }
+    }
 
     private val _user = MutableLiveData<User>()
     val user: LiveData<User> = _user
@@ -39,6 +51,7 @@ class LoginViewModel(
     fun loginUser(email: String, password: String) {
 
         if (validCredentials(email, password)) {
+            setIsLoading(true)
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     val result = repository.loginUser(email, password)
@@ -47,6 +60,9 @@ class LoginViewModel(
                             result.body()?.let { tokenResponse ->
                                 processToken(tokenResponse.data.token)
                             }
+                            // update preferences
+                            lastEmail = email
+                            lastPassword = password
                         } else {
                             val responseError: NimbleError? =
                                 NimbleError.fromString(result.errorBody()!!.string())
@@ -66,6 +82,8 @@ class LoginViewModel(
                 } catch (e: Exception) {
                     e.printStackTrace()
                     _message.postValue("Error registering user")
+                } finally {
+                    setIsLoading(false)
                 }
             }
         }
@@ -75,6 +93,7 @@ class LoginViewModel(
     private fun fetchUserProfile() {
 
         viewModelScope.launch(Dispatchers.IO) {
+            setIsLoading(true)
             try {
                 val result = repository.getUserProfile(accessToken)
                 withContext(Dispatchers.Main) {
@@ -102,6 +121,8 @@ class LoginViewModel(
             } catch (e: Exception) {
                 e.printStackTrace()
                 _message.postValue("Error registering user")
+            } finally {
+                setIsLoading(false)
             }
         }
 
@@ -118,6 +139,8 @@ class LoginViewModel(
             }
         }
     }
+
+    fun getLastUsedCredentials(): SurveyCredentials = SurveyCredentials(lastEmail, lastPassword)
 
     // auxiliary functions
 

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/black">
+
+    <ImageView
+        android:id="@+id/imgCover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:ignore="ContentDescription" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/txtSurveyTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Career training and development"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/fabTakeSurvey"
+            app:layout_constraintBottom_toTopOf="@id/txtSurveyDetails" />
+
+        <TextView
+            android:id="@+id/txtSurveyDetails"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="We would like to know what are your goals and skills you wanted to improve."
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/fabTakeSurvey"
+            app:layout_constraintTop_toTopOf="@id/fabTakeSurvey"
+            app:layout_constraintBottom_toBottomOf="@id/fabTakeSurvey" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabTakeSurvey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/home_screen_tak_survey_button_text"
+            android:src="@drawable/ic_arrow_forward_ios_24"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:shapeAppearanceOverlay="@style/roundedFab"
+            app:srcCompat="@drawable/ic_arrow_forward_ios_24" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
