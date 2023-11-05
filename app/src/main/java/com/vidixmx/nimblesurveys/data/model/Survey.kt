@@ -1,8 +1,10 @@
 package com.vidixmx.nimblesurveys.data.model
 
-
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Survey(
     @SerializedName("active_at")
     val activeAt: String,
@@ -22,4 +24,4 @@ data class Survey(
     @SerializedName("thank_email_below_threshold")
     val thankEmailBelowThreshold: String,
     val title: String,
-)
+) : Parcelable

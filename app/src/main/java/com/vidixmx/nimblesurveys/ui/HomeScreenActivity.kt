@@ -7,7 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.vidixmx.nimblesurveys.data.UserRepository
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
+import com.vidixmx.nimblesurveys.data.SurveyRepository
+import com.vidixmx.nimblesurveys.data.model.Survey
 import com.vidixmx.nimblesurveys.data.model.User
 import com.vidixmx.nimblesurveys.data.remote.RetrofitService
 import com.vidixmx.nimblesurveys.databinding.ActivityHomeScreenBinding
@@ -22,7 +25,7 @@ class HomeScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Instantiate viewModel
-        val repository = UserRepository(RetrofitService.nimbleSurveyApi)
+        val repository = SurveyRepository(RetrofitService.nimbleSurveyApi)
         val factory = SurveysViewModelFactory(application, repository)
         viewModel = ViewModelProvider(this, factory)[SurveysViewModel::class.java]
 
@@ -43,7 +46,15 @@ class HomeScreenActivity : AppCompatActivity() {
     }
 
     private fun setupActivity() {
-        // TODO("Not yet implemented")
+        viewModel.fetchSurveys()
+    }
+
+    private fun setSurveyNavigation(surveys: List<Survey>) {
+        // binding.viewPager.adapter = ToDo
+        TabLayoutMediator(
+            binding.tabLayout,
+            binding.viewPager
+        ) { _, _ -> }.attach()
     }
 
     private fun observeViewModel() {
@@ -52,6 +63,17 @@ class HomeScreenActivity : AppCompatActivity() {
                 refreshScreenControls(user)
             }
         }
+
+        viewModel.selectedSurveyIndex.observe(this) { index ->
+            if (index != -1) {
+
+            }
+        }
+
+        viewModel.surveys.observe(this) { surveys ->
+            setSurveyNavigation(surveys)
+        }
+
     }
 
     private fun refreshScreenControls(user: User) {
@@ -84,6 +106,7 @@ class HomeScreenActivity : AppCompatActivity() {
 
         private const val USER_ARGUMENT = "user"
 
+        @JvmStatic
         fun show(
             packageContext: AppCompatActivity,
             userData: User,

@@ -37,7 +37,7 @@ interface NimbleSurveyApi {
     @GET("surveys")
     suspend fun getSurveys(
         @Header("Authorization") token: String,
-        @QueryMap params: Map<String, String>,
+        @QueryMap params: Map<String, Int>,
     ): Response<SurveysResponse>
 
     @GET("surveys/{id}")
