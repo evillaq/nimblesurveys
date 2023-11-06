@@ -6,4 +6,74 @@
     android:layout_height="match_parent"
     tools:context=".ui.surveys.SurveyDetailsActivity">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/imgDetailsCover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="24dp">
+
+        <TextView
+            android:id="@+id/txtSurveyTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.MaterialComponents.Headline3"
+            android:textStyle="bold"
+            tools:text="Survey Title" />
+
+        <TextView
+            android:id="@+id/txtSurveyDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.MaterialComponents.Headline5"
+            tools:text="Survey Title" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:background="#55000000">
+
+            <TextView
+                android:id="@+id/txtThanks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                tools:text="Dear {name},
+
+Thank you for visiting Scarlett Wine Bar &amp; Restaurant at Pullman Bangkok Hotel G  and for taking the time to complete our guest feedback survey!
+
+Your feedback is very important to us and each survey is read individually by the management and owners shortly after it is sent. We discuss comments and suggestions at our daily meetings and use them to constantly improve our services.
+
+We would very much appreciate it if you could take a few more moments and review us on TripAdvisor regarding your recent visit. By clicking here you will be directed to our page.
+
+Thank you once again and we look forward to seeing you soon!
+
+The Team at Scarlett Wine Bar &amp; Restaurant Pullman Bangkok Hotel G" />
+
+        </ScrollView>
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

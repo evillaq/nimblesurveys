@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.vidixmx.nimblesurveys.data.model.Survey
@@ -39,7 +40,21 @@ class SurveyFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        setupFragmentControls()
         loadSurvey()
+    }
+
+    private fun setupFragmentControls() {
+        with(binding) {
+            fabTakeSurvey.setOnClickListener {
+                survey?.let { survey ->
+                    SurveyDetailsActivity.show(
+                        requireActivity() as AppCompatActivity,
+                        survey.id
+                    )
+                }
+            }
+        }
     }
 
     private fun loadSurvey() {

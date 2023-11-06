@@ -4,14 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayoutMediator
 import com.vidixmx.nimblesurveys.R
 import com.vidixmx.nimblesurveys.data.model.User
@@ -63,10 +61,19 @@ class HomeScreenActivity : AppCompatActivity() {
             }
         })
 
+        setupButtons()
         setSurveyNavigation()
         observeViewModel()
 
         viewModel.fetchSurveys()
+    }
+
+    private fun setupButtons() {
+        with(binding.mainContent) {
+            imgAvatar.setOnClickListener {
+                binding.drawerLayout.openDrawer(GravityCompat.END)
+            }
+        }
     }
 
     private fun setSurveyNavigation() {
@@ -89,7 +96,6 @@ class HomeScreenActivity : AppCompatActivity() {
                     viewModel.logout()
                     true
                 }
-
                 else -> false
             }
         }
@@ -129,9 +135,6 @@ class HomeScreenActivity : AppCompatActivity() {
             }
 
             with(headerBinding) {
-                imgAvatar.setOnClickListener {
-                    binding.drawerLayout.openDrawer(GravityCompat.END)
-                }
                 Glide.with(this@HomeScreenActivity)
                     .load(user.avatarUrl)
                     .circleCrop()

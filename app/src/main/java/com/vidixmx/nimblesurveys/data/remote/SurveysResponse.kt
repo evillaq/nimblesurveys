@@ -16,6 +16,10 @@ data class SurveysResponse(
     )
 
     fun toSurveyList(): List<Survey> {
-        return this.data.map { it.survey }
+        return this.data.map { data ->
+            data.survey.apply {
+                id = data.id
+            }
+        }
     }
 }
