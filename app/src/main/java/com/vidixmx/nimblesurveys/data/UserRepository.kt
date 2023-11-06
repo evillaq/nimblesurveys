@@ -7,6 +7,7 @@ import com.vidixmx.nimblesurveys.data.remote.NimbleSurveyApi
 import com.vidixmx.nimblesurveys.data.remote.NimbleSurveyApi.Argument
 import com.vidixmx.nimblesurveys.data.remote.NimbleSurveyApi.GrantType
 import com.vidixmx.nimblesurveys.data.model.RegistrationRequest
+import com.vidixmx.nimblesurveys.data.model.RevokeRequest
 import com.vidixmx.nimblesurveys.data.remote.UserProfileResponse
 import retrofit2.Response
 
@@ -14,7 +15,7 @@ class UserRepository(
     private val api: NimbleSurveyApi,
 ) {
 
-    suspend fun registerUser(user: User): retrofit2.Response<String> = api.registerAccount(
+    suspend fun registerUser(user: User): Response<String> = api.registerAccount(
         RegistrationRequest(
             user = user,
             clientId = Constants.API_KEY,
@@ -35,9 +36,30 @@ class UserRepository(
 
     }
 
+    suspend fun refreshToken(refreshToken: String): Response<TokenResponse> {
+
+        val loginArgsMap = mutableMapOf(
+            Argument.GRANT_TYPE to GrantType.REFRESH_TOKEN,
+            Argument.REFRESH_TOKEN to refreshToken,
+            Argument.CLIENT_ID to Constants.API_KEY,
+            Argument.CLIENT_SECRET to Constants.API_SECRET
+        )
+        return api.refreshToken(loginArgsMap)
+
+    }
+
     suspend fun getUserProfile(token: String): Response<UserProfileResponse> {
         val authorizationHeaderValue = "Bearer $token"
         return api.getUserProfile(authorizationHeaderValue)
+    }
+
+    suspend fun logout(token: String): Response<Any> {
+        val request = RevokeRequest(
+            token = token,
+            clientId = Constants.API_KEY,
+            clientSecret = Constants.API_SECRET
+        )
+        return api.logout(request)
     }
 
 }
