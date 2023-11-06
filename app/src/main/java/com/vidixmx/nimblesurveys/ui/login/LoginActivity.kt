@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.vidixmx.nimblesurveys.data.UserRepository
-import com.vidixmx.nimblesurveys.data.remote.RetrofitService
 import com.vidixmx.nimblesurveys.databinding.ActivityLoginBinding
-import com.vidixmx.nimblesurveys.ui.surveys.HomeScreenActivity
 import com.vidixmx.nimblesurveys.ui.common.toast
+import com.vidixmx.nimblesurveys.ui.surveys.HomeScreenActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -19,8 +17,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Instantiate viewModel
-        val repository = UserRepository(RetrofitService.nimbleSurveyApi)
-        val factory = LoginViewModelFactory(application, repository)
+        val factory = LoginViewModelFactory(application)
         viewModel = ViewModelProvider(this, factory)[LoginViewModel::class.java]
 
         // Instantiate binding

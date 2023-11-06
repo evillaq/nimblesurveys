@@ -4,19 +4,22 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
-import com.vidixmx.nimblesurveys.data.SurveyRepository
+import com.vidixmx.nimblesurveys.R
 import com.vidixmx.nimblesurveys.data.model.User
-import com.vidixmx.nimblesurveys.data.remote.RetrofitService
 import com.vidixmx.nimblesurveys.databinding.ActivityHomeScreenBinding
+import com.vidixmx.nimblesurveys.databinding.DrawerHeaderBinding
 
 class HomeScreenActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeScreenBinding
+    private lateinit var headerBinding: DrawerHeaderBinding
 
     private lateinit var viewModel: SurveysViewModel
 
@@ -26,12 +29,12 @@ class HomeScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Instantiate viewModel
-        val repository = SurveyRepository(RetrofitService.nimbleSurveyApi)
-        val factory = SurveysViewModelFactory(application, repository)
+        val factory = SurveysViewModelFactory(application)
         viewModel = ViewModelProvider(this, factory)[SurveysViewModel::class.java]
 
-        // Instantiate binding
+        // Instantiate bindings
         binding = ActivityHomeScreenBinding.inflate(layoutInflater)
+        headerBinding = DrawerHeaderBinding.bind(binding.navView.getHeaderView(0))
         setContentView(binding.root)
 
         // recover user from intent
@@ -47,20 +50,55 @@ class HomeScreenActivity : AppCompatActivity() {
     }
 
     private fun setupActivity() {
+
+        setNavigationViewListener()
+
+        // setup backpressed handler to end application
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                moveTaskToBack(true)
+                finish()
+            }
+        })
+
+        setupButtons()
         setSurveyNavigation()
         observeViewModel()
 
         viewModel.fetchSurveys()
     }
 
+    private fun setupButtons() {
+        with(binding.mainContent) {
+            imgAvatar.setOnClickListener {
+                binding.drawerLayout.openDrawer(GravityCompat.END)
+            }
+        }
+    }
+
     private fun setSurveyNavigation() {
         pageAdapter = SurveysPageAdapter(supportFragmentManager, lifecycle)
 
-        binding.viewPager.adapter = pageAdapter
-        TabLayoutMediator(
-            binding.tabLayout,
-            binding.viewPager
-        ) { _, _ -> }.attach()
+        with(binding.mainContent) {
+            viewPager.adapter = pageAdapter
+            TabLayoutMediator(
+                tabLayout,
+                viewPager
+            ) { _, _ -> }.attach()
+        }
+
+    }
+
+    private fun setNavigationViewListener() {
+        binding.navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_logout -> {
+                    viewModel.logout()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -77,25 +115,33 @@ class HomeScreenActivity : AppCompatActivity() {
                 pageAdapter.notifyDataSetChanged()
             }
         }
+
+        viewModel.userLoggedOut.observe(this) { loggedOut ->
+            if (loggedOut) {
+                finish()
+            }
+        }
     }
 
     private fun refreshScreenControls(user: User) {
-        with(binding) {
+        with(binding.mainContent) {
             txtDate.text = viewModel.getCurrentDate()
-            txtHeader.text = "Hello!"
-
+            txtHeader.text = getString(R.string.today_label)
             if (user.avatarUrl != "") {
                 Glide.with(this@HomeScreenActivity)
                     .load(user.avatarUrl)
                     .circleCrop()
                     .into(imgAvatar)
             }
-        }
-    }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
+            with(headerBinding) {
+                Glide.with(this@HomeScreenActivity)
+                    .load(user.avatarUrl)
+                    .circleCrop()
+                    .into(imgAvatarDrawerHeader)
+                txtUserName.text = user.name
+            }
+        }
     }
 
     override fun onStart() {
@@ -122,4 +168,5 @@ class HomeScreenActivity : AppCompatActivity() {
         }
 
     }
+
 }

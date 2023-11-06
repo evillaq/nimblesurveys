@@ -1,6 +1,7 @@
 package com.vidixmx.nimblesurveys.data.remote
 
 import com.vidixmx.nimblesurveys.data.model.RegistrationRequest
+import com.vidixmx.nimblesurveys.data.model.RevokeRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.FieldMap
@@ -24,6 +25,12 @@ interface NimbleSurveyApi {
         @FieldMap params: Map<String, String>,
     ): Response<TokenResponse>
 
+    @FormUrlEncoded
+    @POST("oauth/token")
+    suspend fun refreshToken(
+        @FieldMap params: Map<String, String>,
+    ): Response<TokenResponse>
+
     @POST("registrations")
     suspend fun registerAccount(
         @Body request: RegistrationRequest,
@@ -31,8 +38,8 @@ interface NimbleSurveyApi {
 
     @POST("oauth/revoke")
     suspend fun logout(
-        @FieldMap params: Map<String, String>,
-    ): Response<String>
+        @Body request: RevokeRequest,
+    ): Response<Any>
 
     @GET("surveys")
     suspend fun getSurveys(
@@ -44,7 +51,7 @@ interface NimbleSurveyApi {
     suspend fun getSurveyDetails(
         @Header("Authorization") token: String,
         @Path("id") surveyId: String,
-    ): Response<SurveysResponse>
+    ): Response<SurveyDetailsResponse>
 
     object GrantType {
         const val PASSWORD = "password"
@@ -57,5 +64,7 @@ interface NimbleSurveyApi {
         const val PASSWORD = "password"
         const val CLIENT_ID = "client_id"
         const val CLIENT_SECRET = "client_secret"
+        const val REFRESH_TOKEN = "refresh_token"
+        const val TOKEN = "token"
     }
 }

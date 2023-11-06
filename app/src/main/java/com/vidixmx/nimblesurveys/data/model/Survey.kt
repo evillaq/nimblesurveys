@@ -24,4 +24,5 @@ data class Survey(
     @SerializedName("thank_email_below_threshold")
     val thankEmailBelowThreshold: String,
     val title: String,
+    var id: String,
 ) : Parcelable
