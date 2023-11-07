@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
@@ -15,6 +16,7 @@ import com.vidixmx.nimblesurveys.R
 import com.vidixmx.nimblesurveys.data.model.User
 import com.vidixmx.nimblesurveys.databinding.ActivityHomeScreenBinding
 import com.vidixmx.nimblesurveys.databinding.DrawerHeaderBinding
+import com.vidixmx.nimblesurveys.ui.common.toast
 
 class HomeScreenActivity : AppCompatActivity() {
 
@@ -53,7 +55,7 @@ class HomeScreenActivity : AppCompatActivity() {
 
         setNavigationViewListener()
 
-        // setup backpressed handler to end application
+        // setup back pressed handler to end application
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 moveTaskToBack(true)
@@ -104,8 +106,10 @@ class HomeScreenActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     private fun observeViewModel() {
         viewModel.user.observe(this) { user ->
-            user?.let {
+            if (user != null) {
                 refreshScreenControls(user)
+            } else {
+                finish()
             }
         }
 
@@ -116,10 +120,12 @@ class HomeScreenActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.userLoggedOut.observe(this) { loggedOut ->
-            if (loggedOut) {
-                finish()
-            }
+        viewModel.message.observe(this) { message ->
+            toast(message)
+        }
+
+        viewModel.isLoading.observe(this) { isLoading ->
+            binding.mainContent.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
     }
 

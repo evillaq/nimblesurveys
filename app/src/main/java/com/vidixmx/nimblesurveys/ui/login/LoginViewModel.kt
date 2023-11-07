@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.vidixmx.nimblesurveys.Constants.Preferences
+import com.vidixmx.nimblesurveys.Constants.TOKEN_DEFAULT_EXPIRATION_TIME_IN_SECONDS
 import com.vidixmx.nimblesurveys.data.UserRepository
 import com.vidixmx.nimblesurveys.data.model.Token
 import com.vidixmx.nimblesurveys.data.model.User
@@ -32,7 +33,8 @@ class LoginViewModel(
     private var accessToken by sharedPreferences(Preferences.ACCESS_TOKEN, "")
     private var refreshToken by sharedPreferences(Preferences.REFRESH_TOKEN, "")
     private var tokenCreation by sharedPreferences(Preferences.TOKEN_CREATION_TIMESTAMP, "")
-    private var tokenExpiresInSeconds by sharedPreferences(Preferences.TOKEN_EXPIRES_IN_SECONDS, "")
+    private var tokenExpiresInSeconds by sharedPreferences(Preferences.TOKEN_EXPIRES_IN_SECONDS,
+        TOKEN_DEFAULT_EXPIRATION_TIME_IN_SECONDS.toString())
     private var lastEmail by sharedPreferences(Preferences.LAST_EMAIL, "")
     private var lastPassword by sharedPreferences(Preferences.LAST_PASSWORD, "")
 
@@ -56,7 +58,9 @@ class LoginViewModel(
     private val _user = MutableLiveData<User?>()
     val user: LiveData<User?>
         get() {
-            validateToken()
+            if (tokenCreation == "") {
+                _user.value = null
+            }
             return _user
         }
 
@@ -158,7 +162,7 @@ class LoginViewModel(
      * considering a little margin of n seconds
      */
     fun validateToken() {
-        if (tokenCreation != "" && tokenExpiresInSeconds != "") {
+        if (tokenCreation != "") {
             // if token is no longer valid, request a new one
             if (!isTokenValid(tokenCreation.toLong(), tokenExpiresInSeconds.toLong())) {
                 requestTokenRefresh()
