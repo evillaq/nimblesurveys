@@ -34,15 +34,6 @@ class SurveysViewModel(
 
     private val dateFormatter = SimpleDateFormat("EEEE, MMMM d", Locale.getDefault())
 
-    private val _userLoggedOut = MutableLiveData<Boolean>()
-    val userLoggedOut: LiveData<Boolean> = _userLoggedOut
-
-    private fun setUserLoggedOut(newValue: Boolean) {
-        viewModelScope.launch {
-            _userLoggedOut.postValue(newValue)
-        }
-    }
-
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
     private fun setIsLoading(newValue: Boolean) {
@@ -55,7 +46,9 @@ class SurveysViewModel(
     val user: LiveData<User?> = _user
 
     fun setCurrentUser(user: User?) {
-        _user.value = user
+        viewModelScope.launch {
+            _user.value = user
+        }
     }
 
     private val _surveys = MutableLiveData<List<Survey>>()
@@ -118,7 +111,7 @@ class SurveysViewModel(
 
                 if (result.isSuccessful) {
                     clearTokenPreferences()
-                    setUserLoggedOut(true)
+                    setCurrentUser(null)
                 } else {
                     val responseError: NimbleError? =
                         NimbleError.fromString(result.errorBody()!!.string())
@@ -151,9 +144,8 @@ class SurveysViewModelFactory(
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SurveysViewModel::class.java)) {
-            val surveyRepository: SurveyRepository =
-                SurveyRepository(RetrofitService.nimbleSurveyApi)
-            val userRepository: UserRepository = UserRepository(RetrofitService.nimbleSurveyApi)
+            val surveyRepository = SurveyRepository(RetrofitService.nimbleSurveyApi)
+            val userRepository = UserRepository(RetrofitService.nimbleSurveyApi)
 
             @Suppress("UNCHECKED_CAST")
             return SurveysViewModel(application, surveyRepository, userRepository) as T

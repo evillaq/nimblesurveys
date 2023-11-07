@@ -6,6 +6,7 @@ object Constants {
     const val API_SECRET = "lMQb900L-mTeU-FVTCwyhjsfBwRCxwwbCitPob96cuU"
 
     const val TOKEN_SECONDS_OFFSET = 15L
+    const val TOKEN_DEFAULT_EXPIRATION_TIME_IN_SECONDS = 7200
 
     object Preferences {
         const val ACCESS_TOKEN = "access_token"
